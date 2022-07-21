@@ -1,2 +1,2 @@
-# gitlab
-ed contribution repo for gitlab automation
+# ed_contrib_repo
+For Gitlab automations for ElasticDev
