@@ -74,10 +74,12 @@ class Main(newSchedStack):
                            "amazonec2-use-private-address=true",
                            "amazonec2-tags=gitlab-runner-autoscaler,gitlab,group-runner,{}".format(self.stack.ci_environment),
                            "amazonec2-security-group={}".format(self.stack.sg_id.split("sg-")[1]),
-                           "amazonec2-instance-type={}".format(self.stack.instance_type),
-                           "amazonec2-request-spot-instance=true",
-                           "amazonec2-spot-price={}".format(self.stack.spot_price)
+                           "amazonec2-security-group-readonly=true",
+                           "amazonec2-instance-type={}".format(self.stack.instance_type)
                            ]
+                           # revisit 
+                           #"amazonec2-request-spot-instance=true",
+                           #"amazonec2-spot-price={}".format(self.stack.spot_price)
 
         if self.stack.gitlab_runners_ami: 
             MachineOptions.append("amazonec2-ami={}".format(self.stack.gitlab_runners_ami))
@@ -88,6 +90,7 @@ class Main(newSchedStack):
                     "OffPeakIdleCount": 0,
                     "OffPeakIdleTime": 0,
                     "IdleCount": 0,
+                    "IdleTime": 1800,
                     "MachineOptions": MachineOptions
                     }
     
@@ -125,8 +128,10 @@ class Main(newSchedStack):
                    "limit": 4,
                    "docker": { "tls_verify": False,
                                "image": self.stack.runner_docker_image,
+                               "disable_entrypoint_overide": False,
+                               "oom_kill_disable": False,
                                "privileged": True,
-                               "disable_cache": True,
+                               "disable_cache": False,
                                "shm_size": 0
                                },
                    "cache": self._get_cache_config(),

@@ -16,6 +16,8 @@ def run(stackargs):
 
     # Add execgroup
     stack.add_execgroup("elasticdev:::gitlab::project")
+
+    # Add substack
     stack.add_substack('elasticdev:::ed_core::publish_resource')
 
     # Initialize Variables in stack
