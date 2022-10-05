@@ -12,7 +12,7 @@ class Main(newSchedStack):
         self.parse.add_required(key="bastion_sg_id")
         self.parse.add_required(key="docker_host") 
         self.parse.add_required(key="src_build_groups",default="elasticdev:::gitlab::runner,elasticdev:::gitlab::runner-autoscaling")
-        self.parse.add_required(key="gitlab_token")
+        self.parse.add_required(key="gitlab_runners_token_hash")
 
         # docker image to execute terraform with
         self.parse.add_optional(key="aws_default_region",default="us-west-1")
@@ -58,7 +58,7 @@ class Main(newSchedStack):
                            "aws_account_id":self._get_aws_account_id(),
                            "overide_order_timeout":600 }
 
-        overide_values["add_env_vars"] = { "GITLAB_TOKEN": self.stack.gitlab_token }
+        overide_values["add_env_vars"] = { "GITLAB_TOKEN": self.stack.b64_decode(self.stack.gitlab_runners_token_hash) }
 
         for src_group in self.stack.to_list(self.stack.src_build_groups):
 

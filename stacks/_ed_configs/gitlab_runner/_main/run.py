@@ -148,7 +148,7 @@ def _get_gitlab_runner_toml(stack):
 
     runner = { "name": "gitlab-runner-autoscaler",
                "url": "https://gitlab.com",
-               "token": stack.b64_decode(stack.gitlab_runners_token_hash),
+               "token": stack.gitlab_token,
                "executor": "docker+machine",
                "limit": 4,
                "docker": { "tls_verify": False,
@@ -231,7 +231,7 @@ def run(stackargs):
     stack.parse.add_required(key="subnet_ids")  # we can query this resources through selector
     stack.parse.add_required(key="sg_id")  # we can query this resources through selector
 
-    stack.parse.add_required(key="gitlab_runners_token_hash")
+    stack.parse.add_required(key="gitlab_token")
     stack.parse.add_required(key="gitlab_runner_aws_access_key")
     stack.parse.add_required(key="gitlab_runner_aws_secret_key")
     stack.parse.add_optional(key="gitlab_runner_autoscaling_hash",default="null")
