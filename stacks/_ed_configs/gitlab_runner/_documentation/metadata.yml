@@ -1,11 +1,9 @@
-desc: The creates a subgroup in Gitlab SaaS.
+desc: The creates gitlab runners autoscaling through docker-machine
 release: 0.0.1
 categories: 
    - gitlab
-   - repository
-   - code_repo
+   - runners
 tags:
-   - subgroup
-   - group
-   - host
+   - runners
    - gitlab
+   - autoscaling
