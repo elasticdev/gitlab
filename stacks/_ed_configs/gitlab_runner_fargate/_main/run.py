@@ -45,6 +45,8 @@ class Main(newSchedStack):
 
     def run_build(self):
 
+        import json
+
         self.stack.init_variables()
 
         default_values = { "aws_default_region":self.stack.aws_default_region,
@@ -70,7 +72,7 @@ class Main(newSchedStack):
 
             add_env_vars["RUNNER_TAGS"] = runner_tags
 
-            overide_values["add_env_vars"] = add_env_vars
+            overide_values["add_env_vars"] = json.dumps(add_env_vars)
             overide_values["build_src_group"] = src_group
             overide_values["docker_image_tag"] = docker_image_tag
 
