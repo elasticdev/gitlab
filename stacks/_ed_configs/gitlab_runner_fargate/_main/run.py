@@ -8,7 +8,6 @@ class Main(newSchedStack):
         self.parse.add_required(key="vpc_name")
         self.parse.add_required(key="vpc_id")
         self.parse.add_required(key="subnet_ids")
-        self.parse.add_required(key="sg_id") 
         self.parse.add_required(key="bastion_sg_id")
         self.parse.add_required(key="docker_host") 
         self.parse.add_required(key="src_build_groups",default="elasticdev:::gitlab::runner,elasticdev:::gitlab::runner-autoscaling")
@@ -20,7 +19,6 @@ class Main(newSchedStack):
         self.parse.add_optional(key="disksize",default="25")
         self.parse.add_optional(key="aws_account_id",default="null")  # probably better to use inputvars
 
-        self.parse.add_required(key="docker_image_tag",default="latest")
         self.parse.add_required(key="docker_repo_name")
 
         # Add substack
@@ -50,7 +48,6 @@ class Main(newSchedStack):
         self.stack.init_variables()
 
         default_values = { "aws_default_region":self.stack.aws_default_region,
-                           "docker_image_tag":self.stack.docker_image_tag,
                            "docker_host":self.stack.docker_host,
                            "docker_repo_name":self.stack.docker_repo_name }  # update repo_name  # testtest110
 
@@ -58,11 +55,24 @@ class Main(newSchedStack):
                            "aws_account_id":self._get_aws_account_id(),
                            "overide_order_timeout":600 }
 
-        overide_values["add_env_vars"] = { "GITLAB_TOKEN": self.stack.b64_decode(self.stack.gitlab_runners_token_hash) }
+        add_env_vars = { "GITLAB_TOKEN": self.stack.b64_decode(self.stack.gitlab_runners_token_hash),
+                         "SECURITY_GROUP_ID":self.stack.bastion_sg_id,
+                         "SUBNET":self.stack.subnet_ids.split(",")[0],
+                         "GITLAB_URL":"https://gitlab.com",
+                         "DOCKER_ENV_FIELDS":"GITLAB_TOKEN,SECURITY_GROUP_ID,SUBNET,GITLAB_URL,RUNNER_TAGS" }
 
         for src_group in self.stack.to_list(self.stack.src_build_groups):
 
+            docker_image_tag = src_group.split("::")[-1]
+
+            # revisit
+            runner_tags = "gitlab,elastidev,{}".format(docker_image_tag)
+
+            add_env_vars["RUNNER_TAGS"] = runner_tags
+
+            overide_values["add_env_vars"] = add_env_vars
             overide_values["build_src_group"] = src_group
+            overide_values["docker_image_tag"] = docker_image_tag
 
             inputargs = { "default_values":default_values,
                           "overide_values":overide_values}

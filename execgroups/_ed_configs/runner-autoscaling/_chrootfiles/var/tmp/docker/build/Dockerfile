@@ -2,9 +2,9 @@ FROM ubuntu:20.04
  
 ARG GITLAB_TOKEN 
 ARG RUNNER_TAGS 
-ARG GITLAB_URL="https://gitlab.com" 
 ARG SUBNET
 ARG SECURITY_GROUP_ID 
+ARG GITLAB_URL="https://gitlab.com" 
  
  
 COPY config.toml /tmp/ 
