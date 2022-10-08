@@ -71,6 +71,8 @@ class Main(newSchedStack):
             runner_tags = "gitlab,elastidev,{}".format(docker_image_tag)
 
             add_env_vars["RUNNER_TAGS"] = runner_tags
+            #DOCKER_ENV_FIELDS_B64 = self.stack.b64_encode(_add_env_vars)
+            #_add_env_vars["DOCKER_ENV_FIELDS_B64"] = DOCKER_ENV_FIELDS_B64
 
             overide_values["add_env_vars"] = json.dumps(add_env_vars)
             overide_values["build_src_group"] = src_group
