@@ -26,9 +26,24 @@ class Main(newSchedStack):
         self.stack.add_substack('elasticdev:::aws_iam_role')
         self.stack.add_substack('elasticdev:::ec2_ubuntu_admin')
         self.stack.add_substack('elasticdev:::docker_build_ssh')
+        self.stack.add_substack('elasticdev:::delete_resource')
 
         self.stack.init_execgroups()
         self.stack.init_substacks()
+
+    def _cleanup(self):
+
+        overide_values = {"must_exists":True}
+        overide_values["hostname"] = self.stack.docker_host
+        overide_values["resource_type"] = "server"
+
+        inputargs = {"overide_values":overide_values}
+
+        human_description = "Destroying docker_host docker_host {}".format(self.stack.docker_host)
+        inputargs["automation_phase"] = "infrastructure"
+        inputargs["human_description"] = human_description
+
+        return self.stack.delete_resource.insert(display=True,**inputargs)
 
     def _get_aws_account_id(self):
 
@@ -67,12 +82,7 @@ class Main(newSchedStack):
 
             docker_image_tag = src_group.split("::")[-1]
 
-            # revisit
-            runner_tags = "gitlab,elastidev,{}".format(docker_image_tag)
-
-            add_env_vars["RUNNER_TAGS"] = runner_tags
-            #DOCKER_ENV_FIELDS_B64 = self.stack.b64_encode(_add_env_vars)
-            #_add_env_vars["DOCKER_ENV_FIELDS_B64"] = DOCKER_ENV_FIELDS_B64
+            add_env_vars["RUNNER_TAGS"] = "gitlab,elastidev,{}".format(docker_image_tag)
 
             overide_values["add_env_vars"] = json.dumps(add_env_vars)
             overide_values["build_src_group"] = src_group
@@ -83,7 +93,7 @@ class Main(newSchedStack):
 
             self.stack.docker_build_ssh.insert(display=True,**inputargs)
 
-        return
+        return self._cleanup()
 
     def run_sshkey(self):
 
