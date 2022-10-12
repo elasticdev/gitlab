@@ -20,11 +20,11 @@ class Main(newSchedStack):
         self.parse.add_required(key="disksize",default="20") 
 
         self.parse.add_required(key="gitlab_runners_token_hash")
-        #self.parse.add_required(key="gitlab_runners_ami",default="ami-0d75513e7706cf2d9")  # ubuntu 22.04 lts eu-west-1
-        #self.parse.add_required(key="gitlab_runners_ami",default="ami-0f93e856d36a101f8")  # ubuntu 20.04 lts eu-west-1
-        self.parse.add_required(key="gitlab_runners_ami",default="ami-0f03fd8a6e34800c0") # ubuntu 18.04 lts
         self.parse.add_required(key="gitlab_runner_aws_access_key")
         self.parse.add_required(key="gitlab_runner_aws_secret_key")
+        self.parse.add_required(key="gitlab_runners_ami",default="ami-0f03fd8a6e34800c0")  # ubuntu 18.04 lts
+        #self.parse.add_required(key="gitlab_runners_ami",default="ami-0d75513e7706cf2d9")  # ubuntu 22.04 lts eu-west-1
+        #self.parse.add_required(key="gitlab_runners_ami",default="ami-0f93e856d36a101f8")  # ubuntu 20.04 lts eu-west-1
 
         self.parse.add_optional(key="gitlab_runner_autoscaling_hash",default="null")
 
